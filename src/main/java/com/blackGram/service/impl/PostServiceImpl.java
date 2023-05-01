@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.blackGram.entity.Post;
+import com.blackGram.exception.ResourceNotFoundException;
 import com.blackGram.payload.PostDto;
 import com.blackGram.repository.PostRepository;
 import com.blackGram.service.PostService;
@@ -39,6 +40,29 @@ public class PostServiceImpl implements PostService {
         return postsResponse;
     }
 
+    @Override
+    public PostDto getPostById(long postId) {
+        
+        Post post = postRepository.findById(postId).orElseThrow(()-> new ResourceNotFoundException("postId", "postId", postId));
+
+        return mapToDto(post);
+    }
+
+    @Override
+    public PostDto updatePost(long postId, PostDto postDto) {
+
+        Post post = postRepository.findById(postId).orElseThrow(()-> new ResourceNotFoundException("postId", "postid", postId));
+
+        post.setTitle(postDto.getTitle());
+        post.setDescription(postDto.getDescription());
+        post.setContent(post.getContent());
+
+        Post updatePost = postRepository.save(post);
+    
+        return mapToDto(updatePost);
+    }
+
+
     private Post mapToEntity(PostDto postDto){
 
         Post post = new Post();
@@ -63,6 +87,9 @@ public class PostServiceImpl implements PostService {
         return postDto;
 
     }
+
+    
+    
 
    
     

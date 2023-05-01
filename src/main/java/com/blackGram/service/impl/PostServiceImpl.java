@@ -3,6 +3,9 @@ package com.blackGram.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.blackGram.entity.Post;
@@ -31,11 +34,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts() {
+    public List<PostDto> getAllPosts(int pageNo, int pageSize) {
 
-        List<Post> posts = postRepository.findAll();
+        //paginação
+        PageRequest pageable = PageRequest.of(pageNo, pageSize);
 
-        List<PostDto> postsResponse = posts.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
+        Page<Post> posts = postRepository.findAll(pageable);
+
+        List<Post> listOfPosts = posts.getContent();
+
+        List<PostDto> postsResponse = listOfPosts.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
        
         return postsResponse;
     }
@@ -60,6 +68,14 @@ public class PostServiceImpl implements PostService {
         Post updatePost = postRepository.save(post);
     
         return mapToDto(updatePost);
+    }
+
+    @Override
+    public void deletePost(long postId) {
+        
+        Post post = postRepository.findById(postId).orElseThrow(()-> new ResourceNotFoundException("postid", "postid", postId));
+
+        postRepository.delete(post);
     }
 
 
@@ -87,6 +103,8 @@ public class PostServiceImpl implements PostService {
         return postDto;
 
     }
+
+   
 
     
     

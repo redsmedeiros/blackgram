@@ -6,12 +6,14 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blackGram.payload.PostDto;
@@ -38,9 +40,12 @@ public class PostController {
     }
 
     @GetMapping
-    public List<PostDto> getAllPosts(){
+    public List<PostDto> getAllPosts(
+        @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+        @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+    ){
 
-        List<PostDto> postResponse = postService.getAllPosts();
+        List<PostDto> postResponse = postService.getAllPosts(pageNo, pageSize);
 
         return postResponse;
     }
@@ -60,6 +65,14 @@ public class PostController {
         PostDto postResponse = postService.updatePost(postId, postDto);
 
         return new ResponseEntity<PostDto>(postResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable(name = "id") long postId){
+
+        postService.deletePost(postId);
+
+        return new ResponseEntity<String>("Post deleted successfully", HttpStatus.OK);
     }
     
 }

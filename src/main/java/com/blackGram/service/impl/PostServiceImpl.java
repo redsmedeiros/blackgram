@@ -1,5 +1,8 @@
 package com.blackGram.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import com.blackGram.entity.Post;
@@ -26,6 +29,16 @@ public class PostServiceImpl implements PostService {
         return mapToDto(newPost);
     }
 
+    @Override
+    public List<PostDto> getAllPosts() {
+
+        List<Post> posts = postRepository.findAll();
+
+        List<PostDto> postsResponse = posts.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
+       
+        return postsResponse;
+    }
+
     private Post mapToEntity(PostDto postDto){
 
         Post post = new Post();
@@ -50,5 +63,7 @@ public class PostServiceImpl implements PostService {
         return postDto;
 
     }
+
+   
     
 }

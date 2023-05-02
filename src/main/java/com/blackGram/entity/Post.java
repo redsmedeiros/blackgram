@@ -1,10 +1,14 @@
 package com.blackGram.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -29,4 +33,7 @@ public class Post {
 
     @Column(name = "content", nullable = false)
     private String content;
+
+    @OneToMany(mappedBy = "post")
+    private Set<Comment> comments = new HashSet<>();
 }

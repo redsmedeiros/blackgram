@@ -3,12 +3,13 @@ package com.blackGram.service;
 import java.util.List;
 
 import com.blackGram.payload.PostDto;
+import com.blackGram.payload.PostResponse;
 
 public interface PostService {
 
     PostDto createPost(PostDto postDto);
 
-    List<PostDto> getAllPosts(int pageNo, int pageSize);
+    PostResponse getAllPosts(int pageNo, int pageSize, String sortBy);
 
     PostDto getPostById(long postId);
 

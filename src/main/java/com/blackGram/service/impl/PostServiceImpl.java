@@ -6,11 +6,13 @@ import java.util.stream.Collectors;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.blackGram.entity.Post;
 import com.blackGram.exception.ResourceNotFoundException;
 import com.blackGram.payload.PostDto;
+import com.blackGram.payload.PostResponse;
 import com.blackGram.repository.PostRepository;
 import com.blackGram.service.PostService;
 
@@ -34,18 +36,28 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts(int pageNo, int pageSize) {
+    public PostResponse getAllPosts(int pageNo, int pageSize, String sortBy) {
 
         //paginação
-        PageRequest pageable = PageRequest.of(pageNo, pageSize);
+        PageRequest pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
 
         Page<Post> posts = postRepository.findAll(pageable);
 
         List<Post> listOfPosts = posts.getContent();
 
-        List<PostDto> postsResponse = listOfPosts.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
+        List<PostDto> content = listOfPosts.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
+
+        //instanciar objeto de resposta
+        PostResponse postResponse = new PostResponse();
+
+        postResponse.setContent(content);
+        postResponse.setPageNo(posts.getNumber());
+        postResponse.setPageSize(posts.getSize());
+        postResponse.setTotalElements(posts.getTotalElements());
+        postResponse.setTotalPages(posts.getTotalPages());
+        postResponse.setLast(posts.isLast());
        
-        return postsResponse;
+        return postResponse;
     }
 
     @Override

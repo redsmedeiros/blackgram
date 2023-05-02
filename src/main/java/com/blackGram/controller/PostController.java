@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blackGram.payload.PostDto;
+import com.blackGram.payload.PostResponse;
 import com.blackGram.service.PostService;
 
 
@@ -40,12 +41,13 @@ public class PostController {
     }
 
     @GetMapping
-    public List<PostDto> getAllPosts(
+    public PostResponse getAllPosts(
         @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-        @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+        @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+        @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy
     ){
 
-        List<PostDto> postResponse = postService.getAllPosts(pageNo, pageSize);
+        PostResponse postResponse = postService.getAllPosts(pageNo, pageSize, sortBy);
 
         return postResponse;
     }

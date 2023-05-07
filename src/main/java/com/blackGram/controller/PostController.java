@@ -18,6 +18,8 @@ import com.blackGram.payload.PostDto;
 import com.blackGram.payload.PostResponse;
 import com.blackGram.service.PostService;
 
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/posts")
@@ -30,7 +32,7 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto){
+    public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto){
 
         PostDto postResponse = postService.createPost(postDto);
 
@@ -61,7 +63,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostDto> updatePost(@PathVariable(name = "id") long postId, @RequestBody PostDto postDto){
+    public ResponseEntity<PostDto> updatePost(@Valid @PathVariable(name = "id") long postId, @RequestBody PostDto postDto){
 
         PostDto postResponse = postService.updatePost(postId, postDto);
 
